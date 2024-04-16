@@ -1,0 +1,24 @@
+{
+  "include": [
+    "src",
+    "typings"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": [
+      "ESNext"
+    ],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

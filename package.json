@@ -1,0 +1,40 @@
+{
+  "name": "influence-typed-sdk",
+  "version": "0.2.4",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jisensee/influence-typed-sdk.git"
+  },
+  "files": [
+    "dist",
+    "typings"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "bun clean && bun build --target=node ./src/index.ts --outfile=dist/index.js && bun run build:declaration",
+    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.json && rm tsconfig.tsbuildinfo",
+    "clean": "rm -rf ./dist"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^20.12.7",
+    "@typescript-eslint/eslint-plugin": "7.4.0",
+    "@typescript-eslint/parser": "7.4.0",
+    "eslint-import-resolver-typescript": "3.6.1",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-unused-imports": "3.1.0",
+    "prettier": "3.2.5"
+  },
+  "peerDependencies": {
+    "@influenceth/sdk": "^2.x",
+    "typescript": "^5.0.0",
+    "zod": "^3.x"
+  },
+  "dependencies": {
+    "elastic-builder": "^2.28.1",
+    "remeda": "^1.59.0"
+  }
+}
