@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import esb from 'elastic-builder'
-import { Building, Entity, Ship } from '@influenceth/sdk'
+import { Address, Building, Entity, Ship } from '@influenceth/sdk'
 import type { RawRequest } from './raw-request'
 import { makeSearch } from './search'
 import { makeEntities } from './entity'
@@ -105,8 +105,8 @@ const makeBuildingNames =
 const makeCrews = (rawRequest: RawRequest) => async (walletAddress: string) =>
   makeEntities(rawRequest)({
     match: {
-      path: 'Nft.owners.starknet',
-      value: walletAddress.toLowerCase(),
+      path: 'Crew.delegatedTo',
+      value: Address.toStandard(walletAddress),
     },
     label: 1,
   })
