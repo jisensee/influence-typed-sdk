@@ -10,7 +10,7 @@ export type EntitiesArgs = {
   match?: EntityMatch
   components?: string[]
   label?: number
-  id?: number
+  id?: number | number[]
 }
 export const makeEntities =
   (rawRequest: RawRequest) =>

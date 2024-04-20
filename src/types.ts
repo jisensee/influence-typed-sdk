@@ -1,4 +1,12 @@
-import { Process, Product, Building, Lot, Entity, Ship } from '@influenceth/sdk'
+import {
+  Process,
+  Product,
+  Building,
+  Lot,
+  Entity,
+  Ship,
+  Station,
+} from '@influenceth/sdk'
 import { ZodObject, type ZodRawShape, z } from 'zod'
 import { activitySchema } from './activity-schema'
 
@@ -130,6 +138,21 @@ const shipSchema = z.object({
   transitDeparture: z.number(),
 })
 
+const crewmateSchema = z.object({
+  appearance: z.string(),
+  class: z.number(),
+  coll: z.number(),
+  cosmetic: z.array(z.number()),
+  impactful: z.array(z.number()),
+  status: z.number(),
+  title: z.number(),
+})
+
+export const stationSchema = z.object({
+  population: z.number(),
+  stationType: z.number().transform((v) => Station.getType(v)),
+})
+
 export const entitySchema = z.object({
   id: z.number(),
   label: z.number(),
@@ -142,9 +165,11 @@ export const entitySchema = z.object({
   Location: locationSchema.nullish(),
   Processors: z.array(processorSchema).default([]),
   Crew: crewSchema.nullish(),
+  Crewmate: crewmateSchema.nullish(),
   Extractors: z.array(extractorSchema).default([]),
   Building: buildingSchema.nullish(),
   Ship: shipSchema.nullish(),
+  Station: stationSchema.nullish(),
 })
 
 export const orderSchema = z.object({
@@ -193,6 +218,10 @@ export type EntityProcessor = z.infer<typeof processorSchema>
 export type EntityCrew = z.infer<typeof crewSchema>
 export type EntityExtractor = z.infer<typeof extractorSchema>
 export type EntityBuilding = z.infer<typeof buildingSchema>
+export type EntityCelestial = z.infer<typeof celestialSchema>
+export type EntityShip = z.infer<typeof shipSchema>
+export type EntityCrewmate = z.infer<typeof crewmateSchema>
+export type EntityStation = z.infer<typeof stationSchema>
 export type EntityIds = z.infer<typeof idsSchema>
 export type Activity = z.infer<typeof activitySchema>
 export type EntityOrder = z.infer<typeof orderSchema>
