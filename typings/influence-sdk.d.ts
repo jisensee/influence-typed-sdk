@@ -539,12 +539,24 @@ declare module '@influenceth/sdk' {
     stationType: number
     population: number
   }
+  export type AbilityBonusMatch = {
+    matches: number
+    bonusPerMatch: number
+    bonus: number
+  }
   export type AbilityBonusDetails = {
     name: string
     crewmatesMultiplier: number
-    stationMultiplier: number
-    foodMultiplier: number
+    stationMultiplier?: number
+    foodMultiplier?: number
     totalBonus: number
+    traits: Record<string, AbilityBonusMatch>
+    titles: Record<string, AbilityBonusMatch>
+    class: {
+      classId: number
+      matches: number
+      multiplier: number
+    }
   }
   export const Crew: {
     getAbilityBonus: (
