@@ -13,7 +13,6 @@
     "module": "ESNext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "composite": true,
     "skipLibCheck": true,

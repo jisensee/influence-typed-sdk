@@ -23,14 +23,19 @@ Then you are ready to go:
 import {
   makeInfluenceApi,
   preReleaseInfluenceApiUrl,
-} from 'influence-typed-sdk'
+} from 'influence-typed-sdk/api'
+
+import { makeInfluenceImageUrls } from 'influence-typed-sdk/images'
 
 const api = makeInfluenceApi({
   baseUrl: preReleaseInfluenceApiUrl,
   accessToken: 'your access token',
 })
 
+const imageUrls = makeInfluenceImageUrls()
+
 api.utils.warehouses('0x1234...')
+imageUrls.crewmate(1)
 ```
 
 ## Warning

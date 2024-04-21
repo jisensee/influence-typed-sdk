@@ -6,7 +6,8 @@ import {
 } from '@influenceth/sdk'
 
 const defaultCloudfrontBucket = 'unstoppablegames'
-const defaultCloudfrontImageHost = 'https://d2xo5vocah3zyk.cloudfront.net'
+const defaultCloudfrontImageHost = 'd2xo5vocah3zyk.cloudfront.net'
+const defaultApiImagesUrl = 'https://images-prerelease.influenceth.io/v1'
 
 export type ImageSize = {
   w?: number
@@ -18,17 +19,15 @@ const getSlug = (assetName: string) => {
   return (assetName || '').replace(/[^a-z]/gi, '')
 }
 
-export type ImageUrlsConfig = {
-  cloudfrontImageHost: string
-  cloudfrontBucket: string
-}
-
-const defaultImageUrlsConfig: ImageUrlsConfig = {
+const defaultImageUrlsConfig = {
   cloudfrontImageHost: defaultCloudfrontImageHost,
   cloudfrontBucket: defaultCloudfrontBucket,
+  apiImagesUrl: defaultApiImagesUrl,
 }
 
-export const makeImageUrls = (config = defaultImageUrlsConfig) => {
+export type ImageUrlsConfig = typeof defaultImageUrlsConfig
+
+export const makeInfluenceImageUrls = (config = defaultImageUrlsConfig) => {
   const getCloudfrontUrl = (rawSlug: string, { w, h, f }: ImageSize = {}) => {
     const slug =
       w || h
@@ -46,7 +45,7 @@ export const makeImageUrls = (config = defaultImageUrlsConfig) => {
             })
           )
         : rawSlug
-    return `${config.cloudfrontImageHost}/${slug}`
+    return `https://${config.cloudfrontImageHost}/${slug}`
   }
   const getIconUrl = (
     type: string,
@@ -81,5 +80,11 @@ export const makeImageUrls = (config = defaultImageUrlsConfig) => {
         ...size,
         append: isHologram ? '_Holo' : undefined,
       }),
+
+    crewmate: (crewmateId: number) =>
+      `${config.apiImagesUrl}/crew/${crewmateId}/image.svg`,
+
+    asteroid: (asteroidId: number) =>
+      `${config.apiImagesUrl}/asteroids/${asteroidId}/image.svg`,
   }
 }

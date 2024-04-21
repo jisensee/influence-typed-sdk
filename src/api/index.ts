@@ -5,12 +5,6 @@ export {
   type InfluenceApi,
 } from './api'
 
-export {
-  type ImageSize,
-  type ImageUrlsConfig,
-  makeImageUrls,
-} from './image-urls'
-
 export type { ApiConfig, RequestOptions } from './raw-request'
 
 export type { EntityArgs, EntityMatch } from './entity'
@@ -45,6 +39,10 @@ export type {
   EntityResponse,
   EntityExtractor,
   EntityInventory,
+  EntityStation,
+  EntityShip,
+  EntityCrewmate,
+  EntityCelestial,
   EntityProcessor,
   ProductAmount,
   InfluenceEntity,
