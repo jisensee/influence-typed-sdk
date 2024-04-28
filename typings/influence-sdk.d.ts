@@ -559,11 +559,24 @@ declare module '@influenceth/sdk' {
     }
   }
   export const Crew: {
+    CREWMATE_STACKING_BONUS_EFFICIENCY: number[]
+    CREWMATE_FOOD_PER_YEAR: number
+    STARVING_MULTIPLIER: number
     getAbilityBonus: (
       abilityId: number,
       crewmates: CrewmateObject[],
       station: StationObject,
       timeSinceFed: number
+    ) => AbilityBonusDetails
+    getCurrentFoodRatio: (timeSinceFed?: number, consumption?: number) => number
+    getFoodMultiplier: (
+      timeSinceFed?: number,
+      consumption?: number,
+      rationing: number
+    ) => number
+    getAbilityBonusFromFood: (
+      timeSinceFed: number,
+      crewmates: CrewmateObject[]
     ) => AbilityBonusDetails
   }
 
@@ -607,5 +620,23 @@ declare module '@influenceth/sdk' {
     TYPES: Record<number, StationType>
     getEfficiency: (stationType: number, population: number) => number
     getType: (stationType: number) => StationType
+  }
+
+  export const Permission: {
+    IDS: {
+      USE_LOT: 1
+      RUN_PROCESS: 2
+      ADD_PRODUCTS: 3
+      REMOVE_PRODUCTS: 4
+      STATION_CREW: 5
+      RECRUIT_CREWMATE: 6
+      DOCK_SHIP: 7
+      BUY: 8
+      SELL: 9
+      LIMIT_BUY: 10
+      LIMIT_SELL: 11
+      EXTRACT_RESOURCES: 12
+      ASSEMBLE_SHIP: 13
+    }
   }
 }
