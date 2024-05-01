@@ -74,6 +74,12 @@ export type ProductAmount = z.infer<typeof productAmountSchema>
 const inventorySchema = z.object({
   contents: z.array(productAmountSchema),
   inventoryType: z.number(),
+  mass: z.number(),
+  volume: z.number(),
+  reservedMass: z.number(),
+  reserverVolume: z.number(),
+  status: z.number(),
+  slot: z.number(),
 })
 
 const locationSchema = z
