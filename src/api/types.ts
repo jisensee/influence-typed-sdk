@@ -77,7 +77,7 @@ const inventorySchema = z.object({
   mass: z.number(),
   volume: z.number(),
   reservedMass: z.number(),
-  reserverVolume: z.number(),
+  reservedVolume: z.number(),
   status: z.number(),
   slot: z.number(),
 })
