@@ -1,5 +1,5 @@
 import { Building, Process, Processor, Product } from '@influenceth/sdk'
-import R from 'remeda'
+import * as R from 'remeda'
 import type { ProductAmount } from './types'
 
 export const getInOutputs = (inOrOutputs: Record<number, number>) =>
@@ -26,8 +26,8 @@ export const getOutputAmounts = (
  */
 export const reduceProductAmounts = (
   amounts: ProductAmount[]
-):ProductAmount[]=> {
-  const grouped = R.groupBy(amounts, a => a.product.i)
+): ProductAmount[] => {
+  const grouped = R.groupBy(amounts, (a) => a.product.i)
   return R.entries(grouped).map(([productId, amounts]) => ({
     product: Product.getType(parseInt(productId)),
     amount: amounts.reduce((acc, a) => acc + a.amount, 0),

@@ -53,6 +53,7 @@ declare module '@influenceth/sdk' {
   }
 
   export const Asteroid: {
+    getBaseName: (asteroidId: number, spectralType: number) => string
     getSize: (radius: number) => Size
     getRarity: (bonuses: Bonus[]) => Rarity
     getSpectralType: (spectralTypeId: number) => SpectralType

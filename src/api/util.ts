@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import esb from 'elastic-builder'
-import { Address, Building, Entity, Ship } from '@influenceth/sdk'
+import { Address, Asteroid, Building, Entity, Ship } from '@influenceth/sdk'
 import type { RawRequest } from './raw-request'
 import { makeSearch } from './search'
 import { makeEntities } from './entity'
@@ -70,35 +70,34 @@ const makeFloorPrices =
 const makeAsteroidNames =
   (rawRequest: RawRequest) => async (asteroidIds: number[]) => {
     const entities = makeEntities(rawRequest)
-    const result = await Promise.all(
-      asteroidIds.map((id) =>
-        entities({
-          label: Entity.IDS.ASTEROID,
-          id,
-          components: ['Name'],
-        })
-      )
-    )
+    const asteroids = await entities({
+      id: asteroidIds,
+      label: Entity.IDS.ASTEROID,
+      components: ['Name', 'Celestial'],
+    })
 
     return new Map(
-      result.flat().map((e) => [e.id, e.Name ?? e.id.toString()] as const)
+      asteroids.map(
+        (e) =>
+          [
+            e.id,
+            e.Name ??
+              Asteroid.getBaseName(e.id, e.Celestial?.celestialType ?? 0),
+          ] as const
+      )
     )
   }
 
 const makeBuildingNames =
   (rawRequest: RawRequest) => async (buildingIds: number[]) => {
     const entities = makeEntities(rawRequest)
-    const result = await Promise.all(
-      buildingIds.map((id) =>
-        entities({
-          label: Entity.IDS.BUILDING,
-          id,
-          components: ['Name'],
-        })
-      )
-    )
+    const buildings = await entities({
+      id: buildingIds,
+      label: Entity.IDS.BUILDING,
+      components: ['Name'],
+    })
     return new Map(
-      result.flat().map((e) => [e.id, e.Name ?? e.id.toString()] as const)
+      buildings.map((e) => [e.id, e.Name ?? e.id.toString()] as const)
     )
   }
 
