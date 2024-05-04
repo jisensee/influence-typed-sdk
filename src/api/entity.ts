@@ -6,33 +6,35 @@ export type EntityMatch = {
   path: string
   value: string | number
 }
-export type EntitiesArgs = {
-  match?: EntityMatch
+export type EntityArgsWithMatch = {
+  match: EntityMatch
+}
+export type EntityArgsWithId = {
+  id: number | number[]
+  label: number
+}
+export type EntitiesArgs = (EntityArgsWithMatch | EntityArgsWithId) & {
   components?: string[]
-  label?: number
-  id?: number | number[]
 }
 export const makeEntities =
-  (rawRequest: RawRequest) =>
-  ({ match, components, label, id }: EntitiesArgs) => {
+  (rawRequest: RawRequest) => (args: EntitiesArgs) => {
     const queryParams = new URLSearchParams()
 
-    if (match) {
+    if ('id' in args) {
+      queryParams.append(
+        'id',
+        typeof args.id === 'number' ? args.id.toString() : args.id.join(',')
+      )
+      queryParams.append('label', args.label.toString())
+    } else {
       const matchValue =
-        typeof match.value === 'string' ? `"${match.value}"` : match.value
+        typeof args.match.value === 'string'
+          ? `"${args.match.value}"`
+          : args.match.value
 
-      queryParams.append('match', `${match.path}:${matchValue}`)
+      queryParams.append('match', `${args.match.path}:${matchValue}`)
     }
 
-    if (components) {
-      queryParams.append('components', components.join(','))
-    }
-    if (label) {
-      queryParams.append('label', label.toString())
-    }
-    if (id) {
-      queryParams.append('id', id.toString())
-    }
     return rawRequest(`v2/entities?${queryParams.toString()}`, {
       responseSchema: z.array(entitySchema),
     })
