@@ -14,6 +14,7 @@ export const makeUtils = (rawRequest: RawRequest) => ({
   crews: makeCrews(rawRequest),
   warehouses: makeWarehouses(rawRequest),
   ships: makeShips(rawRequest),
+  buildings: makeBuildings(rawRequest),
   asteroidPage: makeAsteroidPage(rawRequest),
 })
 
@@ -109,6 +110,24 @@ const makeCrews = (rawRequest: RawRequest) => async (walletAddress: string) =>
     },
     label: 1,
   })
+
+const makeBuildings =
+  (rawRequest: RawRequest) => async (walletAddress: string) => {
+    const crewUuids = (await makeCrews(rawRequest)(walletAddress)).map((c) =>
+      Entity.packEntity({ id: c.id, label: Entity.IDS.CREW })
+    )
+    return makeSearch(rawRequest)({
+      index: 'building',
+      request: esb
+        .requestBodySearch()
+        .size(9999)
+        .query(esb.termsQuery('Control.controller.uuid', crewUuids))
+        .toJSON(),
+      options: {
+        responseSchema: searchResponseSchema(entitySchema),
+      },
+    }).then((r) => r.hits.hits.map((h) => h._source))
+  }
 
 export type AsteroidPageArgs = {
   size: number
