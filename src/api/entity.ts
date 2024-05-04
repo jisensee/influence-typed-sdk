@@ -11,10 +11,10 @@ export type EntityArgsWithMatch = {
 }
 export type EntityArgsWithId = {
   id: number | number[]
-  label: number
 }
 export type EntitiesArgs = (EntityArgsWithMatch | EntityArgsWithId) & {
   components?: string[]
+  label: number
 }
 export const makeEntities =
   (rawRequest: RawRequest) => (args: EntitiesArgs) => {
@@ -25,7 +25,6 @@ export const makeEntities =
         'id',
         typeof args.id === 'number' ? args.id.toString() : args.id.join(',')
       )
-      queryParams.append('label', args.label.toString())
     } else {
       const matchValue =
         typeof args.match.value === 'string'
@@ -38,6 +37,7 @@ export const makeEntities =
     if (args.components) {
       queryParams.append('components', args.components.join(','))
     }
+    queryParams.append('label', args.label.toString())
 
     return rawRequest(`v2/entities?${queryParams.toString()}`, {
       responseSchema: z.array(entitySchema),
