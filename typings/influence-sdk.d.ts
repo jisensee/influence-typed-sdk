@@ -573,7 +573,7 @@ declare module '@influenceth/sdk' {
     getFoodMultiplier: (
       timeSinceFed?: number,
       consumption?: number,
-      rationing: number
+      rationing?: number
     ) => number
     getAbilityBonusFromFood: (
       timeSinceFed: number,
