@@ -35,6 +35,10 @@ export const makeEntities =
       queryParams.append('match', `${args.match.path}:${matchValue}`)
     }
 
+    if (args.components) {
+      queryParams.append('components', args.components.join(','))
+    }
+
     return rawRequest(`v2/entities?${queryParams.toString()}`, {
       responseSchema: z.array(entitySchema),
     })
