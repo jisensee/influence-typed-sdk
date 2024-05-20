@@ -11,7 +11,7 @@ export const getOutputAmounts = (
   recipes: number,
   secondaryEff: number
 ): ProductAmount[] =>
-  Object.entries(Process.getType(processId).outputs).map(
+  Object.entries(Process.getType(processId).outputs ?? {}).map(
     ([productId, amount]) => ({
       product: Product.getType(parseInt(productId, 10)),
       amount:

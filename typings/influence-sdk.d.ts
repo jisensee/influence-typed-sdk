@@ -351,7 +351,7 @@ declare module '@influenceth/sdk' {
     name: string
     processorType: number
     inputs: Record<number, number>
-    outputs: Record<number, number>
+    outputs?: Record<number, number>
   }
 
   export const Process: {
@@ -368,6 +368,7 @@ declare module '@influenceth/sdk' {
 
   export const Processor: {
     IDS: {
+      CONSTRUCTION: 0
       REFINERY: 1
       FACTORY: 2
       BIOREACTOR: 3
