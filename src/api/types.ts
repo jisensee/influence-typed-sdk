@@ -6,6 +6,7 @@ import {
   Entity,
   Ship,
   Station,
+  Permission,
 } from '@influenceth/sdk'
 import { ZodObject, type ZodRawShape, z } from 'zod'
 import { activitySchema } from './activity-schema'
@@ -159,6 +160,22 @@ export const stationSchema = z.object({
   stationType: z.number().transform((v) => Station.getType(v)),
 })
 
+const whitelistAccountAgreements = z.array(
+  z.object({
+    permission: z.number(),
+    permitted: z.string(),
+    whitelisted: z.boolean(),
+  })
+)
+
+const whitelistAgreements = z.array(
+  z.object({
+    permission: z.number(),
+    permitted: idsSchema,
+    whitelisted: z.boolean(),
+  })
+)
+
 export const entitySchema = z.object({
   id: z.number(),
   label: z.number(),
@@ -176,6 +193,8 @@ export const entitySchema = z.object({
   Building: buildingSchema.nullish(),
   Ship: shipSchema.nullish(),
   Station: stationSchema.nullish(),
+  WhitelistAccountAgreements: whitelistAccountAgreements.nullish(),
+  WhitelistAgreements: whitelistAgreements.nullish(),
 })
 
 export const orderSchema = z.object({
