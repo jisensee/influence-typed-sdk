@@ -98,6 +98,7 @@ declare module '@influenceth/sdk' {
     classification: string
     category: string
     massPerUnit: number
+    volumePerUnit: number
     isAtomic: boolean
   }
 
