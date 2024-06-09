@@ -468,13 +468,18 @@ declare module '@influenceth/sdk' {
     i: number
     name: string
     description: string
-    landing: boolean
+    cargoInventoryType?: number
+    cargoSlot?: number
     docking: boolean
-    propellantSlot: number
-    propellantInventoryType: number
+    emergencyPropellantCap: number
     exhaustVelocity: number
     hullMass: number
-    emergencyPropellantCap: number
+    landing: boolean
+    propellantSlot: number
+    propellantType: number
+    propellantInventoryType: number
+    processType?: number
+    stationType: number
   }
   export type ShipContructionType = {
     setupTime: number
