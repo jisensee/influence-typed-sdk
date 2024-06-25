@@ -106,9 +106,9 @@ const processorSchema = z.object({
 const crewSchema = z.object({
   actionTarget: idsSchema.nullish(),
   actionRound: z.number(),
-  actionStrategy: z.number(),
+  actionStrategy: z.number().nullish(),
   actionType: z.number(),
-  actionWeight: z.number(),
+  actionWeight: z.number().nullish(),
   delegatedTo: z.string(),
   lastFed: timestamp,
   readyAt: timestamp,
@@ -137,12 +137,12 @@ const celestialSchema = z.object({
 })
 
 const shipSchema = z.object({
-  emergencyAt: z.number(),
+  emergencyAt: z.number().nullish(),
   readyAt: timestamp,
   shipType: z.number().transform(Ship.getType),
   status: z.number(),
-  transitArrival: z.number(),
-  transitDeparture: z.number(),
+  transitArrival: z.number().nullish(),
+  transitDeparture: z.number().nullish(),
 })
 
 const crewmateSchema = z.object({
