@@ -82,7 +82,7 @@ export const makeInfluenceImageUrls = (config = defaultImageUrlsConfig) => {
       }),
 
     crewmate: (crewmateId: number) =>
-      `${config.apiImagesUrl}/crew/${crewmateId}/image.svg`,
+      `${config.apiImagesUrl}/crews/${crewmateId}/captain/image.svg`,
 
     asteroid: (asteroidId: number) =>
       `${config.apiImagesUrl}/asteroids/${asteroidId}/image.svg`,
