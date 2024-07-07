@@ -7,7 +7,7 @@ import {
 
 const defaultCloudfrontBucket = 'unstoppablegames'
 const defaultCloudfrontImageHost = 'd2xo5vocah3zyk.cloudfront.net'
-const defaultApiImagesUrl = 'https://images-prerelease.influenceth.io/v1'
+const defaultApiImagesUrl = 'https://images.influenceth.io/v2'
 
 export type ImageSize = {
   w?: number
@@ -26,6 +26,17 @@ const defaultImageUrlsConfig = {
 }
 
 export type ImageUrlsConfig = typeof defaultImageUrlsConfig
+
+export type CrewmateImageOptions = {
+  bustOnly?: boolean
+  width?: number
+  format?: 'png' | 'svg'
+}
+
+export type AsteroidImageOptions = {
+  width?: number
+  format?: 'png' | 'svg'
+}
 
 export const makeInfluenceImageUrls = (config = defaultImageUrlsConfig) => {
   const getCloudfrontUrl = (rawSlug: string, { w, h, f }: ImageSize = {}) => {
@@ -81,10 +92,22 @@ export const makeInfluenceImageUrls = (config = defaultImageUrlsConfig) => {
         append: isHologram ? '_Holo' : undefined,
       }),
 
-    crewmate: (crewmateId: number) =>
-      `${config.apiImagesUrl}/crew/${crewmateId}/image.svg`,
+    crewmate: (crewmateId: number, options?: CrewmateImageOptions) => {
+      const params = new URLSearchParams()
+      if (options?.bustOnly) params.append('bustOnly', 'true')
+      if (options?.width) params.append('width', options.width.toString())
+      const format = options?.format ?? 'png'
 
-    asteroid: (asteroidId: number) =>
-      `${config.apiImagesUrl}/asteroids/${asteroidId}/image.svg`,
+      return `${config.apiImagesUrl}/crewmates/${crewmateId}/image.${format}?${params.toString()}`
+    },
+
+    asteroid: (asteroidId: number, options?: AsteroidImageOptions) => {
+      const params = new URLSearchParams()
+      if (options?.width) params.append('width', options.width.toString())
+
+      const format = options?.format ?? 'png'
+
+      return `${config.apiImagesUrl}/asteroids/${asteroidId}/image.${format}?${params.toString()}`
+    },
   }
 }

@@ -11,8 +11,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/typescript',
-    'next',
-    'next/core-web-vitals',
   ],
   rules: {
     'unused-imports/no-unused-imports': 'error',
