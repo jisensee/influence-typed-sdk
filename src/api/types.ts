@@ -31,8 +31,9 @@ const resolveLocations = (locations: EntityIds[]) => {
   }
 }
 
-const timestamp = (value?: number | null) =>
-  value !== undefined && value !== null ? new Date(value * 1000) : value
+const timestamp = (value: number) => new Date(value * 1000)
+const optionalTimestamp = (value?: number | null) =>
+  value !== undefined && value !== null ? timestamp(value) : value
 
 const controlSchema = z.object({
   controller: idsSchema,
@@ -167,8 +168,8 @@ const shipSchema = z
   .transform((o) => ({
     ...o,
     readyAtTimestamp: timestamp(o.readyAt),
-    transitArrivalTimestamp: timestamp(o.transitArrival),
-    transitDepartureTimestamp: timestamp(o.transitDeparture),
+    transitArrivalTimestamp: optionalTimestamp(o.transitArrival),
+    transitDepartureTimestamp: optionalTimestamp(o.transitDeparture),
   }))
 
 const crewmateSchema = z.object({
