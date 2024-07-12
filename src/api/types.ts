@@ -1,14 +1,5 @@
-import {
-  Process,
-  Product,
-  Building,
-  Lot,
-  Entity,
-  Ship,
-  Station,
-  Permission,
-} from '@influenceth/sdk'
-import { ZodObject, type ZodRawShape, z } from 'zod'
+import { Lot, Entity, Building, Ship } from '@influenceth/sdk'
+import { ZodObject, type ZodRawShape, z, ZodEffects } from 'zod'
 import { activitySchema } from './activity-schema'
 
 export const idsSchema = z.object({
@@ -17,7 +8,7 @@ export const idsSchema = z.object({
   uuid: z.string().nullish(),
 })
 
-const expandLocations = (locations: EntityIds[]) => {
+const resolveLocations = (locations: EntityIds[]) => {
   const asteroid = locations.find((l) => l.label === Entity.IDS.ASTEROID)
   const lot = locations.find((l) => l.label === Entity.IDS.LOT)
   const building = locations.find((l) => l.label === Entity.IDS.BUILDING)
@@ -40,19 +31,12 @@ const expandLocations = (locations: EntityIds[]) => {
   }
 }
 
-const locationsSchema = z.array(idsSchema).transform(expandLocations)
-export const timestamp = z.number().transform((v) => new Date(v * 1000))
+const timestamp = (value?: number | null) =>
+  value !== undefined && value !== null ? new Date(value * 1000) : value
 
 const controlSchema = z.object({
   controller: idsSchema,
 })
-
-const nameSchema = z
-  .object({
-    name: z.string(),
-  })
-  .nullish()
-  .transform((v) => v?.name)
 
 const nftSchema = z.object({
   owner: z.string().nullish(),
@@ -63,10 +47,9 @@ const nftSchema = z.object({
   }),
 })
 
-const productSchema = z.number().transform((v) => Product.getType(v))
-
 const productAmountSchema = z.object({
-  product: productSchema,
+  product: z.number(),
+  /** amount of the product in KG or pieces */
   amount: z.number(),
 })
 
@@ -75,9 +58,13 @@ export type ProductAmount = z.infer<typeof productAmountSchema>
 const inventorySchema = z.object({
   contents: z.array(productAmountSchema),
   inventoryType: z.number(),
+  /** total mass of goods in this inventory in grams */
   mass: z.number(),
+  /** total volume of goods in this inventory in mililiters */
   volume: z.number(),
+  /** mass of incoming goods in grams */
   reservedMass: z.number(),
+  /** volume of incoming goods in mililiters */
   reservedVolume: z.number(),
   status: z.number(),
   slot: z.number(),
@@ -85,65 +72,104 @@ const inventorySchema = z.object({
 
 const locationSchema = z
   .object({
-    location: idsSchema.transform((ids) => expandLocations([ids])),
-    locations: locationsSchema,
+    location: idsSchema,
+    locations: z.array(idsSchema),
   })
   .nullish()
+  .transform((o) =>
+    o
+      ? {
+          ...o,
+          resolvedLocation: resolveLocations([o.location]),
+          resolvedLocations: resolveLocations(o.locations),
+        }
+      : o
+  )
 
-const processorSchema = z.object({
-  destinationSlot: z.number(),
-  finishTime: timestamp,
-  outputProduct: z.number().transform((v) => Product.getType(v)),
-  processorType: z.number(),
-  recipes: z.number(),
-  runningProcess: z.number().transform((v) => Process.getType(v)),
-  secondaryEff: z.number().transform((v) => (v > 1 ? v - 1 : v)),
-  slot: z.number(),
-  status: z.number(),
-  destination: idsSchema.nullish(),
-})
+const processorSchema = z
+  .object({
+    destinationSlot: z.number(),
+    finishTime: z.number(),
+    outputProduct: z.number(),
+    processorType: z.number(),
+    recipes: z.number(),
+    runningProcess: z.number(),
+    secondaryEff: z.number().transform((v) => (v > 1 ? v - 1 : v)),
+    slot: z.number(),
+    status: z.number(),
+    destination: idsSchema.nullish(),
+  })
+  .transform((o) => ({
+    ...o,
+    finishTimestamp: timestamp(o.finishTime),
+  }))
 
-const crewSchema = z.object({
-  actionTarget: idsSchema.nullish(),
-  actionRound: z.number(),
-  actionStrategy: z.number().nullish(),
-  actionType: z.number(),
-  actionWeight: z.number().nullish(),
-  delegatedTo: z.string(),
-  lastFed: timestamp,
-  readyAt: timestamp,
-  roster: z.array(z.number()),
-})
+const crewSchema = z
+  .object({
+    actionTarget: idsSchema.nullish(),
+    actionRound: z.number(),
+    actionStrategy: z.number().nullish(),
+    actionType: z.number(),
+    actionWeight: z.number().nullish(),
+    delegatedTo: z.string(),
+    lastFed: z.number(),
+    readyAt: z.number(),
+    roster: z.array(z.number()),
+  })
+  .transform((o) => ({
+    ...o,
+    lastFedTimestamp: timestamp(o.lastFed),
+    readyAtTimestamp: timestamp(o.readyAt),
+  }))
 
-const extractorSchema = z.object({
-  destination: idsSchema.nullish(),
-  extractorType: z.number(),
-  finishTime: timestamp,
-  yield: z.number(),
-  outputProduct: z.number().transform((v) => Product.getType(v)),
-})
+const extractorSchema = z
+  .object({
+    destination: idsSchema.nullish(),
+    extractorType: z.number(),
+    finishTime: z.number(),
+    /** yield of the extracted raw material in KG */
+    yield: z.number(),
+    outputProduct: z.number(),
+  })
+  .transform((o) => ({
+    ...o,
+    finishTimestamp: timestamp(o.finishTime),
+  }))
 
-const buildingSchema = z.object({
-  buildingType: z.number().transform((v) => Building.getType(v)),
-  finishTime: timestamp,
-  status: z.number(),
-})
+const buildingSchema = z
+  .object({
+    buildingType: z.number(),
+    finishTime: z.number(),
+    status: z.number(),
+  })
+  .transform((o) => ({
+    ...o,
+    finishTimestamp: timestamp(o.finishTime),
+  }))
 
 const celestialSchema = z.object({
   celestialType: z.number(),
   bonuses: z.number(),
+  /** radius of the celestial in meters */
   radius: z.number(),
   scanStatus: z.number(),
 })
 
-const shipSchema = z.object({
-  emergencyAt: z.number().nullish(),
-  readyAt: timestamp,
-  shipType: z.number().transform(Ship.getType),
-  status: z.number(),
-  transitArrival: z.number().nullish(),
-  transitDeparture: z.number().nullish(),
-})
+const shipSchema = z
+  .object({
+    emergencyAt: z.number().nullish(),
+    readyAt: z.number(),
+    shipType: z.number(),
+    status: z.number(),
+    transitArrival: z.number().nullish(),
+    transitDeparture: z.number().nullish(),
+  })
+  .transform((o) => ({
+    ...o,
+    readyAtTimestamp: timestamp(o.readyAt),
+    transitArrivalTimestamp: timestamp(o.transitArrival),
+    transitDepartureTimestamp: timestamp(o.transitDeparture),
+  }))
 
 const crewmateSchema = z.object({
   appearance: z.string(),
@@ -157,7 +183,7 @@ const crewmateSchema = z.object({
 
 export const stationSchema = z.object({
   population: z.number(),
-  stationType: z.number().transform((v) => Station.getType(v)),
+  stationType: z.number(),
 })
 
 const whitelistAccountAgreements = z.array(
@@ -176,46 +202,65 @@ const whitelistAgreements = z.array(
   })
 )
 
-export const entitySchema = z.object({
-  id: z.number(),
-  label: z.number(),
-  uuid: z.string().nullish(),
-  Control: controlSchema.nullish(),
-  Celestial: celestialSchema.nullish(),
-  Name: nameSchema,
-  Nft: nftSchema.nullish(),
-  Inventories: z.array(inventorySchema).default([]),
-  Location: locationSchema.nullish(),
-  Processors: z.array(processorSchema).default([]),
-  Crew: crewSchema.nullish(),
-  Crewmate: crewmateSchema.nullish(),
-  Extractors: z.array(extractorSchema).default([]),
-  Building: buildingSchema.nullish(),
-  Ship: shipSchema.nullish(),
-  Station: stationSchema.nullish(),
-  WhitelistAccountAgreements: whitelistAccountAgreements.nullish(),
-  WhitelistAgreements: whitelistAgreements.nullish(),
-})
+const prepaidAgreements = z.array(
+  z
+    .object({
+      permission: z.number(),
+      permitted: idsSchema,
+      /** duration of the initial agreement in seconds */
+      initialTerm: z.number(),
+      /** notice period in seconds */
+      noticePeriod: z.number(),
+      noticeTime: z.number(),
+      /** price of the agreement in sway per second */
+      rate: z.number(),
+      startTime: z.number(),
+      endTime: z.number(),
+    })
+    .transform((o) => ({
+      ...o,
+      startTimestamp: timestamp(o.startTime),
+      endTimestamp: timestamp(o.endTime),
+    }))
+)
 
-export const orderSchema = z.object({
-  amount: z.number(),
-  entity: idsSchema,
-  crew: idsSchema,
-  makerFee: z.number(),
-  orderType: z.number(),
-  product: z.number().transform(Product.getType),
-  price: z.number(),
-  storage: idsSchema,
-  storageSlot: z.number(),
-  status: z.number(),
-  validTime: timestamp,
-  initialCaller: z.string(),
-  initialAmount: z.number().nullish(),
-  locations: locationsSchema,
-})
+const prepaidPolicies = z.array(
+  z.object({
+    permission: z.number(),
+    /** duration of the initial agreement in seconds */
+    initialTerm: z.number(),
+    /** notice period in seconds */
+    noticePeriod: z.number(),
+    rate: z.number(),
+  })
+)
+
+export const orderSchema = z
+  .object({
+    amount: z.number(),
+    entity: idsSchema,
+    crew: idsSchema,
+    makerFee: z.number(),
+    orderType: z.number(),
+    product: z.number(),
+    /** price per KG/piece in sway */
+    price: z.number(),
+    storage: idsSchema,
+    storageSlot: z.number(),
+    status: z.number(),
+    validTime: z.number(),
+    initialCaller: z.string(),
+    initialAmount: z.number().nullish(),
+    locations: z.array(idsSchema),
+  })
+  .transform((o) => ({
+    ...o,
+    validTimestamp: timestamp(o.validTime),
+    resolvedLocations: resolveLocations(o.locations),
+  }))
 
 export const searchResponseSchema = <Entity extends ZodRawShape>(
-  entitySchema: ZodObject<Entity>
+  entitySchema: ZodObject<Entity> | ZodEffects<ZodObject<Entity>>
 ) =>
   z.object({
     hits: z.object({
@@ -229,6 +274,57 @@ export const searchResponseSchema = <Entity extends ZodRawShape>(
         })
       ),
     }),
+  })
+
+export const entitySchema = z
+  .object({
+    id: z.number(),
+    label: z.number(),
+    uuid: z.string().nullish(),
+    Control: controlSchema.nullish(),
+    Celestial: celestialSchema.nullish(),
+    Name: z
+      .object({
+        name: z.string(),
+      })
+      .nullish(),
+    Nft: nftSchema.nullish(),
+    Inventories: z.array(inventorySchema).default([]),
+    Location: locationSchema.nullish(),
+    Processors: z.array(processorSchema).default([]),
+    Crew: crewSchema.nullish(),
+    Crewmate: crewmateSchema.nullish(),
+    Extractors: z.array(extractorSchema).default([]),
+    Building: buildingSchema.nullish(),
+    Ship: shipSchema.nullish(),
+    Station: stationSchema.nullish(),
+    WhitelistAccountAgreements: whitelistAccountAgreements.default([]),
+    WhitelistAgreements: whitelistAgreements.default([]),
+    PrepaidAgreements: prepaidAgreements.default([]),
+    PrepaidPolicies: prepaidPolicies.default([]),
+  })
+  .transform((o) => {
+    const getBaseName = () => {
+      if (o.Name?.name) return o.Name.name
+
+      if (o.Ship) {
+        return `${Ship.getType(o.Ship.shipType).name}#${o.id}`
+      }
+      if (o.Building) {
+        return `${Building.getType(o.Building.buildingType).name}#${o.id}`
+      }
+      if (o.Crew) {
+        return `Crew#${o.id}`
+      }
+      return (
+        Object.entries(Entity.IDS).find((e) => o.label === e[1])?.[0] ??
+        'Unknown'
+      )
+    }
+    return {
+      ...o,
+      nameWithDefault: getBaseName(),
+    }
   })
 
 export const entityResponseSchema = z.array(entitySchema)

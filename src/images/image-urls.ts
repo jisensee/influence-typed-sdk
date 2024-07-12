@@ -1,9 +1,4 @@
-import {
-  Assets,
-  type BuildingType,
-  type ProductType,
-  type ShipType,
-} from '@influenceth/sdk'
+import { Assets, Building, Product, Ship } from '@influenceth/sdk'
 
 const defaultCloudfrontBucket = 'unstoppablegames'
 const defaultCloudfrontImageHost = 'd2xo5vocah3zyk.cloudfront.net'
@@ -70,27 +65,32 @@ export const makeInfluenceImageUrls = (config = defaultImageUrlsConfig) => {
     )
 
   return {
-    product: (product: ProductType, size: ImageSize) =>
+    product: (productType: number, size: ImageSize) =>
       getIconUrl(
         'resources',
-        product.name,
-        Assets.Product[product.i]?.iconVersion ?? 0,
+        Product.getType(productType).name,
+        Assets.Product[productType]?.iconVersion ?? 0,
         size
       ),
 
-    building: (building: BuildingType, size: ImageSize, isHologram = false) =>
+    building: (buildingType: number, size: ImageSize, isHologram = false) =>
       getIconUrl(
         'buildings',
-        building.name,
-        Assets.Building[building.i]?.iconVersion ?? 0,
+        Building.getType(buildingType).name,
+        Assets.Building[buildingType]?.iconVersion ?? 0,
         { ...size, append: isHologram ? '_Site' : undefined }
       ),
 
-    ship: (ship: ShipType, size: ImageSize, isHologram = false) =>
-      getIconUrl('ships', ship.name, Assets.Ship[ship.i]?.iconVersion ?? 0, {
-        ...size,
-        append: isHologram ? '_Holo' : undefined,
-      }),
+    ship: (shipType: number, size: ImageSize, isHologram = false) =>
+      getIconUrl(
+        'ships',
+        Ship.getType(shipType).name,
+        Assets.Ship[shipType]?.iconVersion ?? 0,
+        {
+          ...size,
+          append: isHologram ? '_Holo' : undefined,
+        }
+      ),
 
     crewmate: (crewmateId: number, options?: CrewmateImageOptions) => {
       const params = new URLSearchParams()

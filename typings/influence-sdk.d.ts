@@ -1,4 +1,6 @@
 declare module '@influenceth/sdk' {
+  type InfluenceEntity = import('../src/api/types').InfluenceEntity
+
   export type Size = 'Small' | 'Medium' | 'Large' | 'Huge'
   export type SpectralType =
     | 'C'
@@ -90,6 +92,10 @@ declare module '@influenceth/sdk' {
   export const Lot: {
     toId: (asteroidId: number, lotIndex: number) => number
     toIndex: (lotId: number) => number
+    toPosition: (entityorLotId: InfluenceEntity | number) => {
+      asteroidId: number
+      lotIndex: number
+    }
   }
 
   export type ProductType = {
@@ -528,21 +534,6 @@ declare module '@influenceth/sdk' {
     getChain: (address: string) => 'ethereum' | 'starknet'
   }
 
-  export type CrewmateObject =
-    | {
-        classId: number
-        traitIds: number[]
-        titleId: number
-        collectionId: number
-      }
-    | {
-        Crewmate?: {
-          class: number
-          title: number
-          impactful: number[]
-          coll: number
-        } | null
-      }
   export type StationObject = {
     stationType: number
     population: number
@@ -572,8 +563,8 @@ declare module '@influenceth/sdk' {
     STARVING_MULTIPLIER: number
     getAbilityBonus: (
       abilityId: number,
-      crewmates: CrewmateObject[],
-      station: StationObject,
+      crewmates: (InfluenceEntity | NonNullable<InfluenceEntity['Crewmate']>)[],
+      station: NonNullable<InfluenceEntity['Station']>,
       timeSinceFed: number
     ) => AbilityBonusDetails
     getCurrentFoodRatio: (timeSinceFed?: number, consumption?: number) => number
@@ -584,7 +575,7 @@ declare module '@influenceth/sdk' {
     ) => number
     getAbilityBonusFromFood: (
       timeSinceFed: number,
-      crewmates: CrewmateObject[]
+      crewmates: (InfluenceEntity | NonNullable<InfluenceEntity['Crewmate']>)[]
     ) => AbilityBonusDetails
   }
 
@@ -630,6 +621,19 @@ declare module '@influenceth/sdk' {
     getType: (stationType: number) => StationType
   }
 
+  export type PermissionType = {
+    name: string
+    isApplicable: (entity: unknown) => boolean
+    isExclusive?: boolean
+  }
+  export type PolicyType = {
+    name: string
+    description: string
+    policyKey: string | null
+    agreementKey: string | null
+    additionSystemSystem: string | null
+    removalSystem: string | null
+  }
   export const Permission: {
     IDS: {
       USE_LOT: 1
@@ -646,5 +650,12 @@ declare module '@influenceth/sdk' {
       EXTRACT_RESOURCES: 12
       ASSEMBLE_SHIP: 13
     }
+    POLICY_IDS: {
+      PRIVATE: 1
+      PUBLIC: 2
+      PREPAID: 3
+      CONTRACT: 4
+    }
+    getPrepaidPolicyRate: (entity: InfluenceEntity) => number
   }
 }

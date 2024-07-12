@@ -5,11 +5,14 @@ export type ApiConfig = {
   baseUrl: string
 }
 
-export type RequestOptions<Schema extends ZodTypeAny> = {
+export type BaseRequestOptions = {
   logRequest?: boolean
-  responseSchema: Schema
   requestInit?: RequestInit
 }
+
+export type RequestOptions<Schema extends ZodTypeAny> = {
+  responseSchema: Schema
+} & BaseRequestOptions
 
 export const makeRawRequest =
   ({ accessToken, baseUrl }: ApiConfig) =>

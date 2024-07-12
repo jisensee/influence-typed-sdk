@@ -1,4 +1,4 @@
-import { Building, Process, Processor, Product } from '@influenceth/sdk'
+import { Building, Process, Processor } from '@influenceth/sdk'
 import * as R from 'remeda'
 import type { ProductAmount } from './types'
 
@@ -13,7 +13,7 @@ export const getOutputAmounts = (
 ): ProductAmount[] =>
   Object.entries(Process.getType(processId).outputs ?? {}).map(
     ([productId, amount]) => ({
-      product: Product.getType(parseInt(productId, 10)),
+      product: parseInt(productId, 10),
       amount:
         amount *
         recipes *
@@ -27,9 +27,9 @@ export const getOutputAmounts = (
 export const reduceProductAmounts = (
   amounts: ProductAmount[]
 ): ProductAmount[] => {
-  const grouped = R.groupBy(amounts, (a) => a.product.i)
+  const grouped = R.groupBy(amounts, (a) => a.product)
   return R.entries(grouped).map(([productId, amounts]) => ({
-    product: Product.getType(parseInt(productId)),
+    product: parseInt(productId),
     amount: amounts.reduce((acc, a) => acc + a.amount, 0),
   }))
 }

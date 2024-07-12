@@ -20,7 +20,6 @@ export type { SearchArgs, InfluenceIndex } from './search'
 
 export {
   idsSchema,
-  timestamp,
   orderSchema,
   entitySchema,
   entityResponseSchema,
