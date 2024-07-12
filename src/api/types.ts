@@ -236,29 +236,23 @@ const prepaidPolicies = z.array(
   })
 )
 
-export const orderSchema = z
-  .object({
-    amount: z.number(),
-    entity: idsSchema,
-    crew: idsSchema,
-    makerFee: z.number(),
-    orderType: z.number(),
-    product: z.number(),
-    /** price per KG/piece in sway */
-    price: z.number(),
-    storage: idsSchema,
-    storageSlot: z.number(),
-    status: z.number(),
-    validTime: z.number(),
-    initialCaller: z.string(),
-    initialAmount: z.number().nullish(),
-    locations: z.array(idsSchema),
-  })
-  .transform((o) => ({
-    ...o,
-    validTimestamp: timestamp(o.validTime),
-    resolvedLocations: resolveLocations(o.locations),
-  }))
+export const orderSchema = z.object({
+  amount: z.number(),
+  entity: idsSchema,
+  crew: idsSchema,
+  makerFee: z.number(),
+  orderType: z.number(),
+  product: z.number(),
+  /** price per KG/piece in sway */
+  price: z.number(),
+  storage: idsSchema,
+  storageSlot: z.number(),
+  status: z.number(),
+  validTime: z.number().transform(timestamp),
+  initialCaller: z.string(),
+  initialAmount: z.number().nullish(),
+  locations: z.array(idsSchema).transform(resolveLocations),
+})
 
 export const searchResponseSchema = <Entity extends ZodRawShape>(
   entitySchema: ZodObject<Entity>
