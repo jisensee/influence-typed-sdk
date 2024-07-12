@@ -14,6 +14,7 @@ export {
   getOutputAmounts,
   processorToBuilding,
   reduceProductAmounts,
+  getEntityName,
 } from './helpers'
 
 export type { SearchArgs, InfluenceIndex } from './search'

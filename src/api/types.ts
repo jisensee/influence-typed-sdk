@@ -1,5 +1,5 @@
-import { Lot, Entity, Building, Ship } from '@influenceth/sdk'
-import { ZodObject, type ZodRawShape, z, ZodEffects } from 'zod'
+import { Lot, Entity } from '@influenceth/sdk'
+import { ZodObject, type ZodRawShape, z } from 'zod'
 import { activitySchema } from './activity-schema'
 
 export const idsSchema = z.object({
@@ -261,7 +261,7 @@ export const orderSchema = z
   }))
 
 export const searchResponseSchema = <Entity extends ZodRawShape>(
-  entitySchema: ZodObject<Entity> | ZodEffects<ZodObject<Entity>>
+  entitySchema: ZodObject<Entity>
 ) =>
   z.object({
     hits: z.object({
@@ -277,56 +277,32 @@ export const searchResponseSchema = <Entity extends ZodRawShape>(
     }),
   })
 
-export const entitySchema = z
-  .object({
-    id: z.number(),
-    label: z.number(),
-    uuid: z.string().nullish(),
-    Control: controlSchema.nullish(),
-    Celestial: celestialSchema.nullish(),
-    Name: z
-      .object({
-        name: z.string(),
-      })
-      .nullish(),
-    Nft: nftSchema.nullish(),
-    Inventories: z.array(inventorySchema).default([]),
-    Location: locationSchema.nullish(),
-    Processors: z.array(processorSchema).default([]),
-    Crew: crewSchema.nullish(),
-    Crewmate: crewmateSchema.nullish(),
-    Extractors: z.array(extractorSchema).default([]),
-    Building: buildingSchema.nullish(),
-    Ship: shipSchema.nullish(),
-    Station: stationSchema.nullish(),
-    WhitelistAccountAgreements: whitelistAccountAgreements.default([]),
-    WhitelistAgreements: whitelistAgreements.default([]),
-    PrepaidAgreements: prepaidAgreements.default([]),
-    PrepaidPolicies: prepaidPolicies.default([]),
-  })
-  .transform((o) => {
-    const getBaseName = () => {
-      if (o.Name?.name) return o.Name.name
-
-      if (o.Ship) {
-        return `${Ship.getType(o.Ship.shipType).name}#${o.id}`
-      }
-      if (o.Building) {
-        return `${Building.getType(o.Building.buildingType).name}#${o.id}`
-      }
-      if (o.Crew) {
-        return `Crew#${o.id}`
-      }
-      return (
-        Object.entries(Entity.IDS).find((e) => o.label === e[1])?.[0] ??
-        'Unknown'
-      )
-    }
-    return {
-      ...o,
-      nameWithDefault: getBaseName(),
-    }
-  })
+export const entitySchema = z.object({
+  id: z.number(),
+  label: z.number(),
+  uuid: z.string().nullish(),
+  Control: controlSchema.nullish(),
+  Celestial: celestialSchema.nullish(),
+  Name: z
+    .object({
+      name: z.string(),
+    })
+    .nullish(),
+  Nft: nftSchema.nullish(),
+  Inventories: z.array(inventorySchema).default([]),
+  Location: locationSchema.nullish(),
+  Processors: z.array(processorSchema).default([]),
+  Crew: crewSchema.nullish(),
+  Crewmate: crewmateSchema.nullish(),
+  Extractors: z.array(extractorSchema).default([]),
+  Building: buildingSchema.nullish(),
+  Ship: shipSchema.nullish(),
+  Station: stationSchema.nullish(),
+  WhitelistAccountAgreements: whitelistAccountAgreements.default([]),
+  WhitelistAgreements: whitelistAgreements.default([]),
+  PrepaidAgreements: prepaidAgreements.default([]),
+  PrepaidPolicies: prepaidPolicies.default([]),
+})
 
 export const entityResponseSchema = z.array(entitySchema)
 

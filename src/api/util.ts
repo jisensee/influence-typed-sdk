@@ -1,11 +1,12 @@
 import { z } from 'zod'
 
 import esb from 'elastic-builder'
-import { Address, Asteroid, Building, Entity, Ship } from '@influenceth/sdk'
+import { Address, Building, Entity, Ship } from '@influenceth/sdk'
 import type { RawRequest } from './raw-request'
 import { makeSearch } from './search'
 import { makeEntities } from './entity'
 import { entitySchema, searchResponseSchema } from './types'
+import { getEntityName } from './helpers'
 
 export const makeUtils = (rawRequest: RawRequest) => ({
   floorPrices: makeFloorPrices(rawRequest),
@@ -77,16 +78,7 @@ const makeAsteroidNames =
       components: ['Name', 'Celestial'],
     })
 
-    return new Map(
-      asteroids.map(
-        (e) =>
-          [
-            e.id,
-            e.Name?.name ??
-              Asteroid.getBaseName(e.id, e.Celestial?.celestialType ?? 0),
-          ] as const
-      )
-    )
+    return new Map(asteroids.map((e) => [e.id, getEntityName(e)] as const))
   }
 
 const makeBuildingNames =
@@ -97,7 +89,7 @@ const makeBuildingNames =
       label: Entity.IDS.BUILDING,
       components: ['Name'],
     })
-    return new Map(buildings.map((e) => [e.id, e.nameWithDefault] as const))
+    return new Map(buildings.map((e) => [e.id, getEntityName(e)] as const))
   }
 
 const makeCrews = (rawRequest: RawRequest) => async (walletAddress: string) =>
