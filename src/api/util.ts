@@ -82,7 +82,7 @@ const makeAsteroidNames =
         (e) =>
           [
             e.id,
-            e.Name ??
+            e.Name?.name ??
               Asteroid.getBaseName(e.id, e.Celestial?.celestialType ?? 0),
           ] as const
       )
@@ -97,9 +97,7 @@ const makeBuildingNames =
       label: Entity.IDS.BUILDING,
       components: ['Name'],
     })
-    return new Map(
-      buildings.map((e) => [e.id, e.Name ?? e.id.toString()] as const)
-    )
+    return new Map(buildings.map((e) => [e.id, e.nameWithDefault] as const))
   }
 
 const makeCrews = (rawRequest: RawRequest) => async (walletAddress: string) =>
