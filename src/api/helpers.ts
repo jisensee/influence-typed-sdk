@@ -59,17 +59,17 @@ export const processorToBuilding = (processorType: number) => {
 export const getEntityName = (entity: InfluenceEntity) => {
   if (entity.Name?.name) return entity.Name.name
 
-  if (entity.Ship) {
-    return `${Ship.getType(entity.Ship.shipType).name}#${entity.id}`
+  if (entity.Crew) {
+    return `Crew#${entity.id}`
   }
   if (entity.Building) {
     return `${Building.getType(entity.Building.buildingType).name}#${entity.id}`
   }
-  if (entity.Crew) {
-    return `Crew#${entity.id}`
-  }
   if (entity.Celestial) {
     return Asteroid.getBaseName(entity.id, entity.Celestial.celestialType)
+  }
+  if (entity.Ship) {
+    return `${Ship.getType(entity.Ship.shipType).name}#${entity.id}`
   }
   return (
     Object.entries(Entity.IDS).find((e) => entity.label === e[1])?.[0] ??
