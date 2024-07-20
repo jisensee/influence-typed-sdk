@@ -658,4 +658,25 @@ declare module '@influenceth/sdk' {
     }
     getPrepaidPolicyRate: (entity: InfluenceEntity) => number
   }
+
+  type Call = {
+    contractAddress: string
+    entrypoint: string
+    calldata: unknown[]
+  }
+  export const System: {
+    getRunSystemCall: (
+      name: string,
+      input: Record<string, unknown>,
+      dispatcherAddress: string,
+      limitToVars = false
+    ) => Call
+    getTransferWithConfirmationCall: (
+      recipient: string,
+      amount: bigint,
+      memo: unknown[],
+      consumerAddress: string,
+      swayAddress: string
+    ) => Call
+  }
 }
