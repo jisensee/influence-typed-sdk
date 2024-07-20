@@ -662,7 +662,7 @@ declare module '@influenceth/sdk' {
   type Call = {
     contractAddress: string
     entrypoint: string
-    calldata: unknown[]
+    calldata: any
   }
   export const System: {
     getRunSystemCall: (
