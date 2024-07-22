@@ -21,6 +21,10 @@ export const makeEntities =
   (rawRequest: RawRequest) => (args: EntitiesArgs) => {
     const queryParams = new URLSearchParams()
 
+    if ('id' in args && typeof args.id !== 'number' && args.id.length === 0) {
+      return Promise.resolve([])
+    }
+
     if ('id' in args) {
       queryParams.append(
         'id',
