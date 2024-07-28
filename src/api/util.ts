@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import esb from 'elastic-builder'
-import { Address, Building, Entity, Ship } from '@influenceth/sdk'
+import { Address, Building, Entity, Order, Ship } from '@influenceth/sdk'
 import type { RawRequest } from './raw-request'
 import { makeSearch } from './search'
 import { makeEntities } from './entity'
@@ -20,7 +20,8 @@ export const makeUtils = (rawRequest: RawRequest) => ({
 })
 
 const makeFloorPrices =
-  (rawRequest: RawRequest) => async (productIds: number[]) => {
+  (rawRequest: RawRequest) =>
+  async (productIds: number[], options?: { asteroidId?: number }) => {
     const request = esb
       .requestBodySearch()
       .size(0)
@@ -28,9 +29,22 @@ const makeFloorPrices =
         esb
           .boolQuery()
           .must([
-            esb.matchQuery('orderType', '2'),
-            esb.matchQuery('status', '1'),
+            esb.termQuery('orderType', Order.IDS.LIMIT_SELL),
+            esb.termQuery('status', Order.STATUSES.OPEN),
             esb.termsQuery('product', productIds),
+            ...(options?.asteroidId
+              ? [
+                  esb.nestedQuery(
+                    esb
+                      .boolQuery()
+                      .must([
+                        esb.termQuery('locations.label', Entity.IDS.ASTEROID),
+                        esb.termQuery('locations.id', options.asteroidId),
+                      ]),
+                    'locations'
+                  ),
+                ]
+              : []),
           ])
       )
       .agg(
