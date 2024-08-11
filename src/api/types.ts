@@ -41,7 +41,7 @@ const controlSchema = z.object({
 
 const nftSchema = z.object({
   owner: z.string().nullish(),
-  chain: z.string(),
+  chain: z.string().nullish(),
   owners: z.object({
     ethereum: z.string().nullish(),
     starknet: z.string().nullish(),
@@ -238,8 +238,8 @@ const prepaidPolicies = z.array(
 
 const publicPolicies = z.array(
   z.object({
-permission: z.number(),
-public: z.boolean(),
+    permission: z.number(),
+    public: z.boolean(),
   })
 )
 
