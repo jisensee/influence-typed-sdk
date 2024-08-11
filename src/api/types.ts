@@ -236,6 +236,13 @@ const prepaidPolicies = z.array(
   })
 )
 
+const publicPolicies = z.array(
+  z.object({
+permission: z.number(),
+public: z.boolean(),
+  })
+)
+
 export const orderSchema = z.object({
   amount: z.number(),
   entity: idsSchema,
@@ -253,6 +260,27 @@ export const orderSchema = z.object({
   initialAmount: z.number().nullish(),
   locations: z.array(idsSchema).transform(resolveLocations),
 })
+
+const privateSaleSchema = z.object({
+  amount: z.number(),
+  status: z.number(),
+})
+
+const depositSchema = z
+  .object({
+    finishTime: z.number(),
+    /** total yield of this deposit in grams */
+    initialYield: z.number(),
+    /** yield that is still available for extraction in grams */
+    remainingYield: z.number(),
+    resource: z.number(),
+    status: z.number(),
+    yieldEff: z.number(),
+  })
+  .transform((o) => ({
+    ...o,
+    finishTimestamp: timestamp(o.finishTime),
+  }))
 
 export const searchResponseSchema = <Entity extends ZodRawShape>(
   entitySchema: ZodObject<Entity>
@@ -296,6 +324,9 @@ export const entitySchema = z.object({
   WhitelistAgreements: whitelistAgreements.default([]),
   PrepaidAgreements: prepaidAgreements.default([]),
   PrepaidPolicies: prepaidPolicies.default([]),
+  PublicPolicies: publicPolicies.default([]),
+  PrivateSale: privateSaleSchema.nullish(),
+  Deposit: depositSchema.nullish(),
 })
 
 export const entityResponseSchema = z.array(entitySchema)
@@ -314,6 +345,8 @@ export type EntityCelestial = z.infer<typeof celestialSchema>
 export type EntityShip = z.infer<typeof shipSchema>
 export type EntityCrewmate = z.infer<typeof crewmateSchema>
 export type EntityStation = z.infer<typeof stationSchema>
+export type EntityPrivateSale = z.infer<typeof privateSaleSchema>
+export type EntityDeposit = z.infer<typeof depositSchema>
 export type EntityIds = z.infer<typeof idsSchema>
 export type Activity = z.infer<typeof activitySchema>
 export type EntityOrder = z.infer<typeof orderSchema>

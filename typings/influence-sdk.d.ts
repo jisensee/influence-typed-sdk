@@ -679,4 +679,17 @@ declare module '@influenceth/sdk' {
       swayAddress: string
     ) => Call
   }
+
+  export const Deposit: {
+    STATUSES: {
+      UNDISCOVERED: 0
+      SAMPLING: 1
+      SAMPLED: 2
+      USED: 3
+    }
+    /* maximum amount that can be extracted in grams */
+    MAX_YIELD: number
+    /** in-game time in seconds */
+    CORE_SAMPLING_TIME: number
+  }
 }

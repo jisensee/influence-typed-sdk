@@ -40,6 +40,7 @@
     "zod": "^3.x"
   },
   "dependencies": {
+    "@mobily/ts-belt": "^3.13.1",
     "elastic-builder": "^2.28.1",
     "remeda": "^1.59.0"
   }
