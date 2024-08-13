@@ -234,7 +234,9 @@ const makeAsteroidSearch = (rawRequest: RawRequest) => (search: string) =>
         esb
           .boolQuery()
           .should([
-            esb.termQuery('id', search).boost(100),
+            ...(search.match(/^\d+$/)
+              ? [esb.termQuery('id', search).boost(100)]
+              : []),
             esb.matchQuery('Name.name', search),
           ])
       ),
