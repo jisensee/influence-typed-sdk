@@ -493,6 +493,12 @@ declare module '@influenceth/sdk' {
     constructionTime: number
     requirements: Record<number, number>
   }
+  export type ShipVariant = {
+    i: number
+    name: string
+    shipType: number | null
+    exhaustVelocityModifier: number
+  }
   export const Ship: {
     IDS: {
       ESCAPE_MODULE: 1
@@ -505,9 +511,16 @@ declare module '@influenceth/sdk' {
       AVAILABLE: 1
       DISABLED: 3
     }
+    VARIANTS: {
+      STANDARD: 1
+      COBALT_PIONEER: 2
+      TITANIUM_PIONEER: 3
+      AUREATE_PIONEER: 4
+    }
     TYPES: Record<number, ShipType>
     getConstructionType: (shipType: number) => ShipContructionType
     getType: (shipType: number) => ShipType
+    getVariant: (variant: number) => ShipVariant
   }
 
   export type AssetMetadata = {
