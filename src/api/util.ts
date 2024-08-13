@@ -17,6 +17,7 @@ export const makeUtils = (rawRequest: RawRequest) => ({
   ships: makeShips(rawRequest),
   buildings: makeBuildings(rawRequest),
   asteroidPage: makeAsteroidPage(rawRequest),
+  asteroidSearch: makeAsteroidSearch(rawRequest),
 })
 
 const makeFloorPrices =
@@ -223,6 +224,24 @@ const makeShips =
       },
     }).then((r) => r.hits.hits.map((h) => h._source))
   }
+
+const makeAsteroidSearch = (rawRequest: RawRequest) => (search: string) =>
+  makeSearch(rawRequest)({
+    index: 'asteroid',
+    request: esb
+      .requestBodySearch()
+      .query(
+        esb
+          .boolQuery()
+          .should([
+            esb.termQuery('id', search).boost(100),
+            esb.matchQuery('Name.name', search),
+          ])
+      ),
+    options: {
+      responseSchema: searchResponseSchema(entitySchema),
+    },
+  })
 
 const asteroidLocation = (asteroidId: number) =>
   esb.nestedQuery(

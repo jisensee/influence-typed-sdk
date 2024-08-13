@@ -295,6 +295,7 @@ export const searchResponseSchema = <Entity extends ZodRawShape>(
       hits: z.array(
         z.object({
           _source: entitySchema,
+          _score: z.number(),
           sort: z.array(z.number()).nullish(),
         })
       ),
