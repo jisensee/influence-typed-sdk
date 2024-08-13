@@ -42,6 +42,7 @@ const controlSchema = z.object({
 const nftSchema = z.object({
   owner: z.string().nullish(),
   chain: z.string().nullish(),
+  price: z.number().nullish(),
   owners: z.object({
     ethereum: z.string().nullish(),
     starknet: z.string().nullish(),
