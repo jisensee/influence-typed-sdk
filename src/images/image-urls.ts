@@ -1,4 +1,4 @@
-import { Assets, Building, Product, Ship } from '@influenceth/sdk'
+import { Building, Product, Ship } from '@influenceth/sdk'
 
 const defaultCloudfrontBucket = 'unstoppablegames'
 const defaultCloudfrontImageHost = 'd2xo5vocah3zyk.cloudfront.net'
@@ -56,41 +56,28 @@ export const makeInfluenceImageUrls = (config = defaultImageUrlsConfig) => {
   const getIconUrl = (
     type: string,
     assetName: string,
-    iconVersion: number,
     { append, w, h, f }: ImageSize & { append?: string } = {}
   ) =>
     getCloudfrontUrl(
-      `influence/production/images/icons/${type}/${getSlug(assetName)}${append || ''}.v${iconVersion || '1'}.png`,
+      `influence/production/images/icons/${type}/${getSlug(assetName)}${append || ''}.png`,
       { w, h, f }
     )
 
   return {
     product: (productType: number, size: ImageSize) =>
-      getIconUrl(
-        'resources',
-        Product.getType(productType).name,
-        Assets.Product[productType]?.iconVersion ?? 0,
-        size
-      ),
+      getIconUrl('resources', Product.getType(productType).name, size),
 
     building: (buildingType: number, size: ImageSize, isHologram = false) =>
-      getIconUrl(
-        'buildings',
-        Building.getType(buildingType).name,
-        Assets.Building[buildingType]?.iconVersion ?? 0,
-        { ...size, append: isHologram ? '_Site' : undefined }
-      ),
+      getIconUrl('buildings', Building.getType(buildingType).name, {
+        ...size,
+        append: isHologram ? '_Site' : undefined,
+      }),
 
     ship: (shipType: number, size: ImageSize, isHologram = false) =>
-      getIconUrl(
-        'ships',
-        Ship.getType(shipType).name,
-        Assets.Ship[shipType]?.iconVersion ?? 0,
-        {
-          ...size,
-          append: isHologram ? '_Holo' : undefined,
-        }
-      ),
+      getIconUrl('ships', Ship.getType(shipType).name, {
+        ...size,
+        append: isHologram ? '_Holo' : undefined,
+      }),
 
     crewmate: (crewmateId: number, options?: CrewmateImageOptions) => {
       const params = new URLSearchParams()

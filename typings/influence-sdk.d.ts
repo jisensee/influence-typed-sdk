@@ -455,6 +455,8 @@ declare module '@influenceth/sdk' {
       CARGO_SMALL: 15
       CARGO_MEDIUM: 16
       CARGO_LARGE: 17
+      TANK_FARM_SITE: 18
+      TANK_FARM_PRIMARY: 19
     }
 
     STATUSES: {
