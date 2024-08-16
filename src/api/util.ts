@@ -179,7 +179,10 @@ const makeWarehouses =
         esb
           .boolQuery()
           .must([
-            esb.termQuery('Building.buildingType', Building.IDS.WAREHOUSE),
+            esb.termsQuery('Building.buildingType', [
+              Building.IDS.WAREHOUSE,
+              Building.IDS.TANK_FARM,
+            ]),
             esb.termQuery(
               'Building.status',
               Building.CONSTRUCTION_STATUSES.OPERATIONAL
