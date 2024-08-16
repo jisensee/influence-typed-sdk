@@ -411,6 +411,7 @@ declare module '@influenceth/sdk' {
       SPACEPORT: 7
       MARKETPLACE: 8
       HABITAT: 9
+      TANK_FARM: 10
     }
     getType: (buildingId: number) => BuildingType
   }
