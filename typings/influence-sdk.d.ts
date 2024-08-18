@@ -60,6 +60,13 @@ declare module '@influenceth/sdk' {
     getRarity: (bonuses: Bonus[]) => Rarity
     getSpectralType: (spectralTypeId: number) => SpectralType
     getBonuses: (packedBonuses: number, spectralTypeId: number) => Bonus[]
+    getAbundances: (packed: string) => Record<number, number>
+    getAbundanceAtLot: (
+      asteroidId: number,
+      lotIndex: number,
+      productId: number,
+      abundances: string
+    ) => any
     getLotDistance: (
       asteroidId: number,
       originLotIndex: number,

@@ -151,6 +151,7 @@ const buildingSchema = z
 
 const celestialSchema = z.object({
   celestialType: z.number(),
+  abundances: z.string().nullish(),
   bonuses: z.number(),
   /** radius of the celestial in meters */
   radius: z.number(),
