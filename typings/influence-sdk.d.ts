@@ -57,6 +57,13 @@ declare module '@influenceth/sdk' {
   export type AsteroidPoint = [number, number, number]
   export type AbundanceMapSettings = unknown
   export const Asteroid: {
+    SCAN_STATUSES: {
+      UNSCANNED: 0
+      SURFACE_SCANNING: 1
+      SURFACE_SCANNED: 2
+      RESOURCE_SCANNING: 3
+      RESOURCE_SCANNED: 4
+    }
     getBaseName: (asteroidId: number, spectralType: number) => string
     getSize: (radius: number) => Size
     getRarity: (bonuses: Bonus[]) => Rarity
