@@ -54,6 +54,8 @@ declare module '@influenceth/sdk' {
     getPeriod(): number
   }
 
+  export type AsteroidPoint = [number, number, number]
+  export type AbundanceMapSettings = unknown
   export const Asteroid: {
     getBaseName: (asteroidId: number, spectralType: number) => string
     getSize: (radius: number) => Size
@@ -61,6 +63,15 @@ declare module '@influenceth/sdk' {
     getSpectralType: (spectralTypeId: number) => SpectralType
     getBonuses: (packedBonuses: number, spectralTypeId: number) => Bonus[]
     getAbundances: (packed: string) => Record<number, number>
+    getAbundanceAtPosition: (
+      point: AsteroidPoint,
+      settings: AbundanceMapSettings
+    ) => number
+    getAbundanceMapSettings: (
+      asteroidId: number,
+      resourceId: number,
+      abundances: string
+    ) => AbundanceMapSettings
     getAbundanceAtLot: (
       asteroidId: number,
       lotIndex: number,
@@ -78,6 +89,11 @@ declare module '@influenceth/sdk' {
       destLotIndex: number,
       totalBonus?: number
     ) => number
+    getLotPosition: (
+      asteroidId: number,
+      lotIndex: number,
+      numLots = 0
+    ) => AsteroidPoint
   }
 
   export const Entity: {
