@@ -457,7 +457,7 @@ declare module '@influenceth/sdk' {
     massConstraint: number
     volumeConstraint: number
     category: number
-    productConstraints: Record<number, number>
+    productConstraints?: Record<number, number>
   }
   export const Inventory: {
     IDS: {
