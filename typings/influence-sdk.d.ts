@@ -66,7 +66,7 @@ declare module '@influenceth/sdk' {
       lotIndex: number,
       productId: number,
       abundances: string
-    ) => any
+    ) => number
     getLotDistance: (
       asteroidId: number,
       originLotIndex: number,
