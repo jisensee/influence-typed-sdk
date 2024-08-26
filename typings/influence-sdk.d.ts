@@ -443,6 +443,7 @@ declare module '@influenceth/sdk' {
       HABITAT: 9
       TANK_FARM: 10
     }
+    CONSTRUCTION_STATUS_LABELS: Record<number, string>
     getType: (buildingId: number) => BuildingType
   }
 
