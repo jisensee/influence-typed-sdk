@@ -626,7 +626,20 @@ declare module '@influenceth/sdk' {
     ) => AbilityBonusDetails
   }
 
+  export type CrewmateClass = {
+    name: string
+    description: string
+  }
   export const Crewmate: {
+    getClass: (classId: number) => CrewmateClass
+    CLASS_IDS: {
+      UNDECIDED: 0
+      PILOT: 1
+      ENGINEER: 2
+      MINER: 3
+      MERCHANT: 4
+      SCIENTIST: 5
+    }
     ABILITY_IDS: {
       CORE_SAMPLE_TIME: 1
       CORE_SAMPLE_QUALITY: 2
