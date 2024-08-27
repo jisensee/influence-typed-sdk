@@ -751,5 +751,11 @@ declare module '@influenceth/sdk' {
     MAX_YIELD: number
     /** in-game time in seconds */
     CORE_SAMPLING_TIME: number
+    getSampleBounds: (
+      abundance: number,
+      initialYield = 0,
+      totalBonus = 1
+    ) => { lower: number; upper: number }
+    getSampleTime: (totalBonus = 1) => number
   }
 }
