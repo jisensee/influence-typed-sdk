@@ -1,5 +1,6 @@
 declare module '@influenceth/sdk' {
   type InfluenceEntity = import('../src/api/types').InfluenceEntity
+  type EntityOrbit = import('../src/api/types').EntityOrbit
 
   export type Size = 'Small' | 'Medium' | 'Large' | 'Huge'
   export type SpectralType =
@@ -39,7 +40,7 @@ declare module '@influenceth/sdk' {
     type: BonusType
   }
 
-  export interface OrbitalElements {
+  export type OrbitalElements = {
     a: number
     e: number
     i: number
@@ -48,10 +49,57 @@ declare module '@influenceth/sdk' {
     m: number
   }
 
+  export type Position = {
+    x: number
+    y: number
+    z: number
+  }
   export class AdalianOrbit {
-    constructor(orbitalElements: OrbitalElements)
+    constructor(
+      orbitalElements: OrbitalElements | EntityOrbit,
+      options?: {
+        units?: 'AU' | 'km'
+      }
+    )
 
     getPeriod(): number
+    /**
+     * Retrieves Cartesian coordinates in AU at a specified elapsed time
+     * @param elapsed Time in days (in-game) since Time.START_TIMESTAMP
+     */
+    getPositionAtTime(elapsed: number): Position
+  }
+
+  export class Time {
+    static CLOCK_ZERO_TIMESTAMP: number
+    static ORBIT_ZERO_TIMESTAMP: number
+
+    constructor(unixTimeMs: number, secondsPerAday?: number)
+
+    static toGameDuration(
+      inRealityDuration: number,
+      timeAcceleration: number
+    ): number
+    static toRealDuration(inGameDuration, timeAcceleration: number): number
+    static getSecondsPerAday(timeAcceleration?: number): number
+    static fromGameClockADays(
+      adalianClockTime: number,
+      timeAcceleration?: number
+    ): number
+    static fromOrbitADays(
+      elapsedOrbitADays: number,
+      timeAcceleration?: number
+    ): number
+    static fromUnixSeconds(unixTime: number, timeAcceleration?: number): number
+    static fromUnixMilliseconds(
+      unixTime: number,
+      timeAcceleration?: number
+    ): number
+
+    toGameClockADays(format: true): string
+    toGameClockADays(): number
+    toOrbitADays(): number
+    toDate(): Date
   }
 
   export type AsteroidPoint = [number, number, number]

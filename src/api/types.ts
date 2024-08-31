@@ -285,6 +285,15 @@ const depositSchema = z
     finishTimestamp: timestamp(o.finishTime),
   }))
 
+export const orbitSchema = z.object({
+  a: z.number(),
+  argp: z.number(),
+  ecc: z.number(),
+  inc: z.number(),
+  m: z.number(),
+  raan: z.number(),
+})
+
 export const searchResponseSchema = <Entity extends ZodRawShape>(
   entitySchema: ZodObject<Entity>
 ) =>
@@ -331,6 +340,7 @@ export const entitySchema = z.object({
   PublicPolicies: publicPolicies.default([]),
   PrivateSale: privateSaleSchema.nullish(),
   Deposit: depositSchema.nullish(),
+  Orbit: orbitSchema.nullish(),
 })
 
 export const entityResponseSchema = z.array(entitySchema)
@@ -351,6 +361,7 @@ export type EntityCrewmate = z.infer<typeof crewmateSchema>
 export type EntityStation = z.infer<typeof stationSchema>
 export type EntityPrivateSale = z.infer<typeof privateSaleSchema>
 export type EntityDeposit = z.infer<typeof depositSchema>
+export type EntityOrbit = z.infer<typeof orbitSchema>
 export type EntityIds = z.infer<typeof idsSchema>
 export type Activity = z.infer<typeof activitySchema>
 export type EntityOrder = z.infer<typeof orderSchema>
