@@ -85,16 +85,16 @@ declare module '@influenceth/sdk' {
     static fromGameClockADays(
       adalianClockTime: number,
       timeAcceleration?: number
-    ): number
+    ): Time
     static fromOrbitADays(
       elapsedOrbitADays: number,
       timeAcceleration?: number
-    ): number
-    static fromUnixSeconds(unixTime: number, timeAcceleration?: number): number
+    ): Time
+    static fromUnixSeconds(unixTime: number, timeAcceleration?: number): Time
     static fromUnixMilliseconds(
       unixTime: number,
       timeAcceleration?: number
-    ): number
+    ): Time
 
     toGameClockADays(format: true): string
     toGameClockADays(): number
