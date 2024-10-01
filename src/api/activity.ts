@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import type { RawRequest } from './raw-request'
-import type { ActivityEvent } from './types'
-import { activitySchema } from './activity-schema'
+import { activitySchema, type ActivityEvent } from './types'
 
 export type ActivityArgs = {
   uuid?: string
