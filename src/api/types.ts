@@ -505,11 +505,11 @@ export const activitySchema = z.object({
         })),
     }),
     z.object({
-      name: z.literal('PublicPolicyAssigned'),
+      name: z.literal('SurfaceScanStarted'),
       ...baseEventSchema,
     }),
     z.object({
-      name: z.literal('SurfaceScanStarted'),
+      name: z.literal('PublicPolicyAssigned'),
       ...baseEventSchema,
     }),
     z.object({
