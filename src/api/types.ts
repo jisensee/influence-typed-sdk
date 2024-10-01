@@ -413,14 +413,6 @@ export const activitySchema = z.object({
       }),
     }),
     z.object({
-      name: z.literal('PublicPolicyAssigned'),
-      ...baseEventSchema,
-    }),
-    z.object({
-      name: z.literal('SurfaceScanStarted'),
-      ...baseEventSchema,
-    }),
-    z.object({
       name: z.literal('ConstructionStarted'),
       ...baseEventSchema,
       returnValues: z
@@ -457,18 +449,6 @@ export const activitySchema = z.object({
         })),
     }),
     z.object({
-      name: z.literal('PrepaidAgreementAccepted'),
-      ...baseEventSchema,
-    }),
-    z.object({
-      name: z.literal('PrepaidAgreementExtended'),
-      ...baseEventSchema,
-    }),
-    z.object({
-      name: z.literal('RemovedFromWhitelist'),
-      ...baseEventSchema,
-    }),
-    z.object({
       name: z.literal('SamplingDepositStarted'),
       ...baseEventSchema,
       returnValues: z
@@ -486,6 +466,63 @@ export const activitySchema = z.object({
           ...o,
           finishTimestamp: timestamp(o.finishTime),
         })),
+    }),
+    z.object({
+      name: z.literal('ShipAssemblyStarted'),
+      ...baseEventSchema,
+      returnValues: z
+        .object({
+          ...baseReturnValuesSchema,
+          ship: entitySchema,
+          shipType: z.number(),
+          dryDock: entitySchema,
+          dryDockSlot: z.number(),
+          finishTime: z.number(),
+        })
+        .transform((o) => ({
+          ...o,
+          finishTimestamp: timestamp(o.finishTime),
+        })),
+    }),
+    z.object({
+      name: z.literal('ResourceExtractionStarted'),
+      ...baseEventSchema,
+      returnValues: z
+        .object({
+          ...baseReturnValuesSchema,
+          deposit: entitySchema,
+          resource: z.number(),
+          yield: z.number(),
+          extractor: entitySchema,
+          extractorSlot: z.number(),
+          destination: entitySchema,
+          destinationSlot: z.number(),
+          finishTime: z.number(),
+        })
+        .transform((o) => ({
+          ...o,
+          finishTimestamp: timestamp(o.finishTime),
+        })),
+    }),
+    z.object({
+      name: z.literal('PublicPolicyAssigned'),
+      ...baseEventSchema,
+    }),
+    z.object({
+      name: z.literal('SurfaceScanStarted'),
+      ...baseEventSchema,
+    }),
+    z.object({
+      name: z.literal('PrepaidAgreementAccepted'),
+      ...baseEventSchema,
+    }),
+    z.object({
+      name: z.literal('PrepaidAgreementExtended'),
+      ...baseEventSchema,
+    }),
+    z.object({
+      name: z.literal('RemovedFromWhitelist'),
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('SellOrderCreated'),
@@ -612,26 +649,6 @@ export const activitySchema = z.object({
       ...baseEventSchema,
     }),
     z.object({
-      name: z.literal('ResourceExtractionStarted'),
-      ...baseEventSchema,
-      returnValues: z
-        .object({
-          ...baseReturnValuesSchema,
-          deposit: entitySchema,
-          resource: z.number(),
-          yield: z.number(),
-          extractor: entitySchema,
-          extractorSlot: z.number(),
-          destination: entitySchema,
-          destinationSlot: z.number(),
-          finishTime: z.number(),
-        })
-        .transform((o) => ({
-          ...o,
-          finishTimestamp: timestamp(o.finishTime),
-        })),
-    }),
-    z.object({
       name: z.literal('ResourceExtractionFinished'),
       ...baseEventSchema,
     }),
@@ -642,23 +659,6 @@ export const activitySchema = z.object({
     z.object({
       name: z.literal('SamplingDepositFinished'),
       ...baseEventSchema,
-    }),
-    z.object({
-      name: z.literal('ShipAssemblyStarted'),
-      ...baseEventSchema,
-      returnValues: z
-        .object({
-          ...baseReturnValuesSchema,
-          ship: entitySchema,
-          shipType: z.number(),
-          dryDock: entitySchema,
-          dryDockSlot: z.number(),
-          finishTime: z.number(),
-        })
-        .transform((o) => ({
-          ...o,
-          finishTimestamp: timestamp(o.finishTime),
-        })),
     }),
     z.object({
       name: z.literal('ShipAssemblyFinished'),
