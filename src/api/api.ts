@@ -2,7 +2,7 @@ import { type ApiConfig, makeRawRequest } from './raw-request'
 import { makeSearch } from './search'
 import { makeEntities, makeEntity } from './entity'
 import { makeUtils } from './util'
-import { makeActivity } from './activity'
+import { makeActivities } from './activity'
 
 export const makeInfluenceApi = (config: ApiConfig) => {
   const rawRequest = makeRawRequest(config)
@@ -11,7 +11,7 @@ export const makeInfluenceApi = (config: ApiConfig) => {
     search: makeSearch(rawRequest),
     entity: makeEntity(rawRequest),
     entities: makeEntities(rawRequest),
-    activity: makeActivity(rawRequest),
+    activities: makeActivities(rawRequest),
     util: makeUtils(rawRequest),
   }
 }

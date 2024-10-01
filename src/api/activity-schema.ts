@@ -1,13 +1,69 @@
 import { Product } from '@influenceth/sdk'
 import { z } from 'zod'
+import { crewSchema, crewmateSchema, idsSchema, locationSchema } from './types'
 
 const timestamp = z.number().transform((v) => new Date(v * 1000))
+const entitySchema = z.object({
+  label: z.number(),
+  id: z.number(),
+})
+const entityWithUuidSchema = {
+  label: z.number(),
+  id: z.number(),
+  uuid: z.string(),
+}
+const productAmountSchema = z.object({
+  product: z.number(),
+  amount: z.number(),
+})
+
+const crewDataSchema = z.object({
+  ...entityWithUuidSchema,
+  Crew: crewSchema,
+  Location: locationSchema,
+})
+const crewmatesDataSchema = z.array(
+  z.object({
+    ...entityWithUuidSchema,
+    Crewmate: crewmateSchema,
+  })
+)
+const stationDataSchema = z.object({
+  entity: z.object(entityWithUuidSchema),
+  population: z.number(),
+  stationType: z.number(),
+})
+const baseEventSchema = {
+  logIndex: z.number(),
+  timestamp,
+  transactionIndex: z.number(),
+  transactionHash: z.string(),
+  version: z.number(),
+}
+const baseReturnValuesSchema = {
+  callerCrew: entitySchema,
+  caller: z.string(),
+}
+
 export const activitySchema = z.object({
+  id: z.string(),
+  unresolvedFor: z.array(idsSchema),
+  entities: z.array(idsSchema),
+  createdAt: z.string().transform((v) => new Date(v)),
+  updatedAt: z.string().transform((v) => new Date(v)),
+  hash: z.string(),
+  addresses: z.array(z.string()),
+  data: z.object({
+    crew: crewDataSchema,
+    crewmates: crewmatesDataSchema,
+    station: stationDataSchema,
+  }),
   event: z.discriminatedUnion('name', [
     z.object({
       name: z.literal('MaterialProcessingFinished'),
-      timestamp,
+      ...baseEventSchema,
       returnValues: z.object({
+        ...baseReturnValuesSchema,
         callerCrew: z.object({ id: z.number() }),
         processor: z.object({ id: z.number() }),
         processorSlot: z.number(),
@@ -15,9 +71,9 @@ export const activitySchema = z.object({
     }),
     z.object({
       name: z.literal('SellOrderFilled'),
-      timestamp,
+      ...baseEventSchema,
       returnValues: z.object({
-        callerCrew: z.object({ id: z.number() }),
+        ...baseReturnValuesSchema,
         sellerCrew: z.object({ id: z.number() }),
         product: z.number().transform(Product.getType),
         amount: z.number(),
@@ -26,219 +82,268 @@ export const activitySchema = z.object({
     }),
     z.object({
       name: z.literal('PublicPolicyAssigned'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('SurfaceScanStarted'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ConstructionStarted'),
-      timestamp,
+      ...baseEventSchema,
+      returnValues: z.object({
+        ...baseReturnValuesSchema,
+        building: entitySchema,
+        finishTime: timestamp,
+      }),
     }),
     z.object({
       name: z.literal('MaterialProcessingStarted'),
-      timestamp,
+      ...baseEventSchema,
+      returnValues: z.object({
+        ...baseReturnValuesSchema,
+        processor: entitySchema,
+        processorSlot: z.number(),
+        process: z.number(),
+        origin: entitySchema,
+        originSlot: z.number(),
+        inputs: z.array(productAmountSchema),
+        outputs: z.array(productAmountSchema),
+        destination: entitySchema,
+        destinationSlot: z.number(),
+      }),
     }),
     z.object({
       name: z.literal('PrepaidAgreementAccepted'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('PrepaidAgreementExtended'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('RemovedFromWhitelist'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('SamplingDepositStarted'),
-      timestamp,
+      ...baseEventSchema,
+      returnValues: z.object({
+        ...baseReturnValuesSchema,
+        deposit: entitySchema,
+        lot: entitySchema,
+        resource: z.number(),
+        improving: z.boolean(),
+        origin: entitySchema,
+        originSlot: z.number(),
+      }),
     }),
     z.object({
       name: z.literal('SellOrderCreated'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('AsteroidManaged'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('AsteroidPurchased'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('AsteroidScanned'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('BuildingRepossessed'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('BuyOrderFilled'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('BuyOrderCreated'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ConstructionPlanned'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ConstructionAbandoned'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ConstructionFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ConstructionDeconstructed'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewDelegated'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewFormed'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewmatePurchased'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewmateRecruited'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewmatesArranged'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewmatesExchanged'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewEjected'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('CrewStationed'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('DeliveryFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('AddedToWhitelist'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('DeliverySent'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('DeliveryReceived'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('EmergencyActivated'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('EmergencyDeactivated'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('EmergencyPropellantCollected'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('FoodSupplied'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ArrivalRewardClaimed'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('PrepareForLaunchRewardClaimed'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('NameChanged'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('RandomEventResolved'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ResourceExtractionStarted'),
-      timestamp,
+      ...baseEventSchema,
+      returnValues: z.object({
+        ...baseReturnValuesSchema,
+        deposit: entitySchema,
+        resource: z.number(),
+        yield: z.number(),
+        extractor: entitySchema,
+        extractorSlot: z.number(),
+        destination: entitySchema,
+        destinationSlot: z.number(),
+        finishTime: timestamp,
+      }),
     }),
     z.object({
       name: z.literal('ResourceExtractionFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ResourceScanFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('SamplingDepositFinished'),
-      timestamp,
+      ...baseEventSchema,
+    }),
+    z.object({
+      name: z.literal('ShipAssemblyStarted'),
+      ...baseEventSchema,
+      returnValues: z.object({
+        ...baseReturnValuesSchema,
+        ship: entitySchema,
+        shipType: z.number(),
+        dryDock: entitySchema,
+        dryDockSlot: z.number(),
+        finishTime: timestamp,
+      }),
     }),
     z.object({
       name: z.literal('ShipAssemblyFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ShipDocked'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ShipUndocked'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('SurfaceScanFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('Transfer'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('TransitStarted'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('TransitFinished'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('ShipCommandeered'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('DepositListedForSale'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('DepositUnlistedForSale'),
-      timestamp,
+      ...baseEventSchema,
     }),
     z.object({
       name: z.literal('DepositPurchased'),
-      timestamp,
+      ...baseEventSchema,
     }),
   ]),
 })

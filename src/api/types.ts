@@ -72,7 +72,7 @@ const inventorySchema = z.object({
   slot: z.number(),
 })
 
-const locationSchema = z
+export const locationSchema = z
   .object({
     location: idsSchema,
     locations: z.array(idsSchema),
@@ -106,7 +106,7 @@ const processorSchema = z
     finishTimestamp: timestamp(o.finishTime),
   }))
 
-const crewSchema = z
+export const crewSchema = z
   .object({
     actionTarget: idsSchema.nullish(),
     actionRound: z.number(),
@@ -175,7 +175,7 @@ const shipSchema = z
     transitDepartureTimestamp: optionalTimestamp(o.transitDeparture),
   }))
 
-const crewmateSchema = z.object({
+export const crewmateSchema = z.object({
   appearance: z.string(),
   class: z.number(),
   coll: z.number(),
