@@ -13,12 +13,15 @@ export type ActivityArgs = {
 
 export const makeActivities =
   (rawRequest: RawRequest) => async (args: ActivityArgs) => {
-    const params = new URLSearchParams({
-      page: args.page?.toString() ?? '1',
-      pageSize: args.pageSize?.toString() ?? '25',
-    })
+    const params = new URLSearchParams()
+    if (args.page) {
+      params.append('page', args.page.toString())
+    }
+    if (args.pageSize) {
+      params.append('pageSize', args.pageSize.toString())
+    }
     if (args.types) {
-      params.append('types', args.types.join(','))
+      params.append('events', args.types.join(','))
     }
     if (args.unresolved !== undefined) {
       params.append('unresolved', args.unresolved.toString())
