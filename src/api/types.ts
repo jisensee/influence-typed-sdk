@@ -347,6 +347,10 @@ const entityWithUuidSchema = {
   id: z.number(),
   uuid: z.string(),
 }
+const idLabelSchema = z.object({
+  id: z.number(),
+  label: z.number(),
+})
 const resolvedTimestampSchema = z.number().transform(timestamp)
 
 const crewDataSchema = z.object({
@@ -418,7 +422,7 @@ export const activitySchema = z.object({
       returnValues: z
         .object({
           ...baseReturnValuesSchema,
-          building: entitySchema,
+          building: idLabelSchema,
           finishTime: z.number(),
         })
         .transform((o) => ({
@@ -432,14 +436,14 @@ export const activitySchema = z.object({
       returnValues: z
         .object({
           ...baseReturnValuesSchema,
-          processor: entitySchema,
+          processor: idLabelSchema,
           processorSlot: z.number(),
           process: z.number(),
-          origin: entitySchema,
+          origin: idLabelSchema,
           originSlot: z.number(),
           inputs: z.array(productAmountSchema),
           outputs: z.array(productAmountSchema),
-          destination: entitySchema,
+          destination: idLabelSchema,
           finishTime: z.number(),
           destinationSlot: z.number(),
         })
@@ -454,11 +458,11 @@ export const activitySchema = z.object({
       returnValues: z
         .object({
           ...baseReturnValuesSchema,
-          deposit: entitySchema,
-          lot: entitySchema,
+          deposit: idLabelSchema,
+          lot: idLabelSchema,
           resource: z.number(),
           improving: z.boolean(),
-          origin: entitySchema,
+          origin: idLabelSchema,
           originSlot: z.number(),
           finishTime: z.number(),
         })
@@ -473,9 +477,9 @@ export const activitySchema = z.object({
       returnValues: z
         .object({
           ...baseReturnValuesSchema,
-          ship: entitySchema,
+          ship: idLabelSchema,
           shipType: z.number(),
-          dryDock: entitySchema,
+          dryDock: idLabelSchema,
           dryDockSlot: z.number(),
           finishTime: z.number(),
         })
@@ -490,12 +494,12 @@ export const activitySchema = z.object({
       returnValues: z
         .object({
           ...baseReturnValuesSchema,
-          deposit: entitySchema,
+          deposit: idLabelSchema,
           resource: z.number(),
           yield: z.number(),
-          extractor: entitySchema,
+          extractor: idLabelSchema,
           extractorSlot: z.number(),
-          destination: entitySchema,
+          destination: idLabelSchema,
           destinationSlot: z.number(),
           finishTime: z.number(),
         })
