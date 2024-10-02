@@ -377,7 +377,7 @@ const baseEventSchema = {
   version: z.number(),
 }
 const baseReturnValuesSchema = {
-  callerCrew: entitySchema,
+  callerCrew: idLabelSchema,
   caller: z.string(),
 }
 
@@ -400,8 +400,7 @@ export const activitySchema = z.object({
       ...baseEventSchema,
       returnValues: z.object({
         ...baseReturnValuesSchema,
-        callerCrew: z.object({ id: z.number() }),
-        processor: z.object({ id: z.number() }),
+        processor: idLabelSchema,
         processorSlot: z.number(),
       }),
     }),
