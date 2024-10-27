@@ -383,17 +383,19 @@ const baseReturnValuesSchema = {
 
 export const activitySchema = z.object({
   id: z.string(),
-  unresolvedFor: z.array(idsSchema),
+  unresolvedFor: z.array(idsSchema).default([]),
   entities: z.array(idsSchema),
   createdAt: z.string().transform((v) => new Date(v)),
   updatedAt: z.string().transform((v) => new Date(v)),
-  hash: z.string(),
+  hash: z.string().nullish(),
   addresses: z.array(z.string()),
-  data: z.object({
-    crew: crewDataSchema,
-    crewmates: crewmatesDataSchema,
-    station: stationDataSchema,
-  }),
+  data: z
+    .object({
+      crew: crewDataSchema,
+      crewmates: crewmatesDataSchema,
+      station: stationDataSchema,
+    })
+    .nullish(),
   event: z.discriminatedUnion('name', [
     z.object({
       name: z.literal('MaterialProcessingFinished'),
