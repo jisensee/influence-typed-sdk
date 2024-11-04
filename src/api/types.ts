@@ -165,6 +165,8 @@ const shipSchema = z
     status: z.number(),
     transitArrival: z.number().nullish(),
     transitDeparture: z.number().nullish(),
+    transitOrigin: idsSchema.nullish(),
+    transitDestination: idsSchema.nullish(),
     variant: z.number(),
   })
   .transform((o) => ({
