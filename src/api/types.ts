@@ -1,4 +1,4 @@
-import { Lot, Entity } from '@influenceth/sdk'
+import { Lot, Entity, Time } from '@influenceth/sdk'
 import { ZodObject, type ZodRawShape, z } from 'zod'
 
 export const idsSchema = z.object({
@@ -31,8 +31,11 @@ const resolveLocations = (locations: EntityIds[]) => {
 }
 
 const timestamp = (value: number) => new Date(value * 1000)
-const optionalTimestamp = (value?: number | null) =>
-  value !== undefined && value !== null ? timestamp(value) : value
+
+const adalianTimestamp = (value: number) =>
+  Time.fromOrbitADays(value / 24 / 60 / 60).toDate()
+const optionalAdalianTimestamp = (value?: number | null) =>
+  value !== undefined && value !== null ? adalianTimestamp(value) : value
 
 const controlSchema = z.object({
   controller: idsSchema,
@@ -172,8 +175,8 @@ const shipSchema = z
   .transform((o) => ({
     ...o,
     readyAtTimestamp: timestamp(o.readyAt),
-    transitArrivalTimestamp: optionalTimestamp(o.transitArrival),
-    transitDepartureTimestamp: optionalTimestamp(o.transitDeparture),
+    transitArrivalTimestamp: optionalAdalianTimestamp(o.transitArrival),
+    transitDepartureTimestamp: optionalAdalianTimestamp(o.transitDeparture),
   }))
 
 export const crewmateSchema = z.object({
