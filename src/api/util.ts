@@ -90,7 +90,6 @@ const makeAsteroidNames =
     const asteroids = await entities({
       id: asteroidIds,
       label: Entity.IDS.ASTEROID,
-      components: ['Name', 'Celestial'],
     })
 
     return new Map(asteroids.map((e) => [e.id, getEntityName(e)] as const))
@@ -102,7 +101,6 @@ const makeBuildingNames =
     const buildings = await entities({
       id: buildingIds,
       label: Entity.IDS.BUILDING,
-      components: ['Name'],
     })
     return new Map(buildings.map((e) => [e.id, getEntityName(e)] as const))
   }
